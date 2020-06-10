@@ -19,7 +19,7 @@ Location should be enabled to work with GeoFence.
 On opening the app, we have four buttons "Add Geofence", "Remove Geofence", "Add Rows", "Delete All Rows"
 
 We can add Locations(POI) by using menu "+" button  to enter location manually. We can add more locations with "Add Rows" button which will add the locations which are given in onClickListener of that button.
-
+```
  mAddRowsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,9 +35,10 @@ We can add Locations(POI) by using menu "+" button  to enter location manually. 
                 adapter.notifyDataSetChanged();
             }
         });
-
+```
 Once the user reaches outer circle, we will clear the old geofences and add new set of POIs. This can be added in getLocations() in GeoFenceCommon.class.
 
+```
 public ArrayList<POIBean> getLocations(boolean isFromActivity){
         if(!isFromActivity) {
             getDB().deleteAll();
@@ -48,7 +49,7 @@ public ArrayList<POIBean> getLocations(boolean isFromActivity){
   .....
   .....
   }
-  
+  ```
   ## Changing Radius of POI
   
   We can change the radius of POI in Constants file.
@@ -58,9 +59,9 @@ public ArrayList<POIBean> getLocations(boolean isFromActivity){
   ## How it works?
   
   On Adding a set of POI rows in database table, they will be displayed on Homescreen sorted by distance from current location to all POIs and max of 19 will be shown.
-  
+  ```
   database.rawQuery( "SELECT * FROM "+DatabaseHelper.TABLE_NAME+" ORDER BY (("+location_lat+" - "+DatabaseHelper.LAT+")*("+location_lat+" - "+DatabaseHelper.LAT+")) + (("+location_lng+" - "+DatabaseHelper.LNG+")*("+location_lng+" - "+DatabaseHelper.LNG+")) ASC LIMIT 19", null );
-  
+  ```
   where location_lat and location_lng are cordiantes of current location.
   
   
