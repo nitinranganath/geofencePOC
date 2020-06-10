@@ -73,7 +73,7 @@ Whenever the user enters any POI, we will get a notification that he entered tha
 
 
 ## Some check points
-[a link](https://simpleinout.helpscoutdocs.com/article/232-my-geofences-arent-working-android#:~:text=Make%20sure%20that%20the%20Geofence,doing%20it%20on%20the%20device.)
+[Points to check](https://simpleinout.helpscoutdocs.com/article/232-my-geofences-arent-working-android#:~:text=Make%20sure%20that%20the%20Geofence,doing%20it%20on%20the%20device.)
   
   
   
