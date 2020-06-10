@@ -1,45 +1,78 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+## Database
+GeoFencePOC is having a SQLite DB table named STORES with rows
+ > ID (Auto Increment)
+ > Name 
+ > Latitude
+ > Longitude
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
 
----
+## Permissions
+Access Location Permission will be asked on opening the app, which "Allow all the Time" to be selected to make the app run in background as well.
 
-## Edit a file
+Some devices doing battery optimisations by default and need to select Don't optimise in the Settings -> Apps & Notifications -> App info -> Bettery optimisation 
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+Location should be enabled to work with GeoFence.
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+## Adding locations
 
----
+On opening the app, we have four buttons "Add Geofence", "Remove Geofence", "Add Rows", "Delete All Rows"
 
-## Create a file
+We can add Locations(POI) by using menu "+" button  to enter location manually. We can add more locations with "Add Rows" button which will add the locations which are given in onClickListener of that button.
 
-Next, you’ll add a new file to this repository.
+ mAddRowsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbManager = geoFenceCommon.getDB();
+                dbManager.deleteAll();
+                LOCATION_ARRAYLIST.clear();
+                dbManager.insert("Home", 16.409169, 81.588186);
+                dbManager.insert("factory", 16.408272, 81.584704);
+                dbManager.insert("market", 16.412576, 81.606477);
+                dbManager.insert("Hotel", 16.41307, 81.606007);
+                dbManager.insert("AGH", 16.415549, 81.621073);
+                LOCATION_ARRAYLIST.addAll(geoFenceCommon.getLocations(true));
+                adapter.notifyDataSetChanged();
+            }
+        });
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+Once the user reaches outer circle, we will clear the old geofences and add new set of POIs. This can be added in getLocations() in GeoFenceCommon.class.
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+public ArrayList<POIBean> getLocations(boolean isFromActivity){
+        if(!isFromActivity) {
+            getDB().deleteAll();
+            getDB().insert("New place AGH", 16.415549, 81.621073);
+            getDB().insert("New place Hotel", 16.41307, 81.6066007);
+            getDB().insert("New place Market", 16.412576, 81.606477);
+        }
+  .....
+  .....
+  }
+  
+  ## Changing Radius of POI
+  
+  We can change the radius of POI in Constants file.
+ 
+  public static final float GEOFENCE_RADIUS_IN_METERS = 984.252f; //300mts in  ft
+  
+  ## How it works?
+  
+  On Adding a set of POI rows in database table, they will be displayed on Homescreen sorted by distance from current location to all POIs and max of 19 will be shown.
+  
+  database.rawQuery( "SELECT * FROM "+DatabaseHelper.TABLE_NAME+" ORDER BY (("+location_lat+" - "+DatabaseHelper.LAT+")*("+location_lat+" - "+DatabaseHelper.LAT+")) + (("+location_lng+" - "+DatabaseHelper.LNG+")*("+location_lng+" - "+DatabaseHelper.LNG+")) ASC LIMIT 19", null );
+  
+  where location_lat and location_lng are cordiantes of current location.
+  
+  
+Along with the 19 POIs obtained from DB, we are adding a new GEOFENCE with id = -1 and name = "myplace", latitude and logitude will be current location's coordinates in getLocations() method in GeoFenceCommon.class while registering geofences. This row is registered with Geofence.GEOFENCE_TRANSITION_EXIT, radius = distance between current location and last row(sorted by distance) location, and remaining 19 will be registered with Geofence.GEOFENCE_TRANSITION_ENTER, radius = radius mentioned in Constants file. This will be done in populateGeofenceList() method in GeofenceCommon class.
 
----
 
-## Clone a repository
+Whenever the user enters any POI, we will get a notification that he entered that place. But when he exit the outer circle, we will get a notification that he exited myplace, and deletes all geofences and database tables and adds a new set of DB rows and geofences.
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+
+  
+  
+  
+  
