@@ -10,7 +10,7 @@ GeoFencePOC is having a SQLite DB table named STORES with rows
 ## Permissions
 Access Location Permission will be asked on opening the app, which "Allow all the Time" to be selected to make the app run in background as well.
 
-Some devices doing battery optimisations by default and need to select Don't optimise in the Settings -> Apps & Notifications -> App info -> Bettery optimisation 
+Some devices doing battery optimisations by default and need to select Don't optimise in the Settings -> Apps & Notifications -> App info -> Battery optimisation 
 
 Location should be enabled to work with GeoFence.
 
